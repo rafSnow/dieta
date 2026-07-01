@@ -13,6 +13,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5000000 // 5MB
+      },
       manifest: {
         name: 'NutriFlow',
         short_name: 'NutriFlow',
