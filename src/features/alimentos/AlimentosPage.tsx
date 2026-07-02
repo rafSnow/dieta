@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../../components/ui/alert-dialog';
 import { Star } from 'lucide-react';
 import { AlimentoForm } from './AlimentoForm';
+import { BuscaOnlineDialog } from './BuscaOnlineDialog';
 import type { AlimentoFormData } from './schemas';
 import type { Alimento } from '../../db/database';
 
@@ -53,16 +54,22 @@ export function AlimentosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-3xl font-bold tracking-tight">Alimentos</h1>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger render={<Button onClick={handleOpenNew} />}>
-            Novo Alimento
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>{editingAlimento ? 'Editar Alimento' : 'Novo Alimento'}</DialogTitle>
-            </DialogHeader>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <BuscaOnlineDialog />
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger render={
+              <Button onClick={handleOpenNew}>
+                Novo Alimento
+              </Button>
+            }>
+              Novo Alimento
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>{editingAlimento ? 'Editar Alimento' : 'Novo Alimento'}</DialogTitle>
+              </DialogHeader>
             <AlimentoForm 
               initialData={editingAlimento || undefined} 
               onSubmit={handleSave}
@@ -70,6 +77,7 @@ export function AlimentosPage() {
             />
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
