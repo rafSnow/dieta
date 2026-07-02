@@ -15,13 +15,12 @@ export interface OFFProduct {
 export async function searchOpenFoodFacts(query: string): Promise<OFFProduct[]> {
   if (!query || query.trim().length < 2) return [];
 
-  const url = `https://br.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20`;
+  const targetUrl = `https://br.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20`;
+  const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
   
   try {
     const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'NutriFlowApp - Android/Web - WebApp'
-      }
+      // allorigins accepts simple GET without custom headers
     });
 
     if (!response.ok) {
