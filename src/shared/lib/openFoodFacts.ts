@@ -16,18 +16,26 @@ export async function searchOpenFoodFacts(query: string): Promise<OFFProduct[]> 
   if (!query || query.trim().length < 2) return [];
 
   const targetUrl = `https://br.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20`;
-  const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+  const url = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
   
   try {
-    const response = await fetch(url, {
-      // allorigins accepts simple GET without custom headers
-    });
-
+    const response = await fetch(url);
     if (!response.ok) {
-      throw new Error('Falha ao consultar a API Open Food Facts');
+      throw new Error('Falha na comunicação com o proxy.');
     }
 
-    const data = await response.json();
+    const proxyData = await response.json();
+    
+    // allorigins returns status.http_code
+    if (proxyData.status && proxyData.status.http_code === 503) {
+      throw new Error('O servidor do Open Food Facts está sobrecarregado no momento (Erro 503). Tente novamente mais tarde.');
+    }
+
+    if (!proxyData.contents) {
+      throw new Error('Resposta vazia da API.');
+    }
+
+    const data = JSON.parse(proxyData.contents);
     
     // Filtrar apenas produtos que tenham macronutrientes declarados e tenham nome
     const validProducts = (data.products || []).filter((p: any) => {
